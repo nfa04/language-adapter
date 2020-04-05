@@ -38,7 +38,7 @@ class languageReader {
 	}
 	
 	function getDowngradeLanguagePackage($lang) {
-		return new languagePackage(langPackDir.'/'.$this->getDowngradeLanguageName($lang));
+		return new languagePackage(langPackDir.'/'.$this->getDowngradeLanguageName($lang), $this);
 	}
 	
 	function getLanguagePackage($lang, $use_fallback = true) {
