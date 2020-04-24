@@ -81,7 +81,10 @@ class languagePackage {
 					$data = explode('/', $command[1]);
 					// $data[0] contains the package
 					// $data[1] contains the stringId
-					$words[$i] = $this->reader->getLanguagePackage($data[0])->getString($data[1]);
+					if($data[0] == 'this') {
+						$words[$i] = $this->getString($data[1]);
+					}
+					else $words[$i] = $this->reader->getLanguagePackage($data[0])->getString($data[1]);
 				}
 			} else continue;
 		}
