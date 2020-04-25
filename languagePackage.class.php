@@ -88,7 +88,9 @@ class languagePackage {
 				}
 			} else continue;
 		}
-		return implode(' ', $words);
+		$str = implode(' ', $words);
+		if($this->reader->getLinebreakReplace()) $str = nl2br($str);
+		return $str;
 	}
 
 }

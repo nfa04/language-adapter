@@ -2,35 +2,58 @@
 class languageReader {
 
 	private $langPackages = array();
+	private $langPackDir;
+	private $fallbackLanguage;
+	private $use_downgrade_fallbacks;
+	private $replace_linebreaks;
 	
 	private function is_complex($lang) {
 		if(strpos($lang, '-') === false) return false;
 		else return true;
 	}
 	
-	function __construct($langPackDir, $fallbackLanguage = 'en', $use_downgrade_fallbacks = true) {
-        define('langPackDir', $langPackDir);
-        define('fallbackLanguage', $fallbackLanguage);
-        define('use_downgrade_fallbacks', $use_downgrade_fallbacks);
+	function __construct($langPackDir, $fallbackLanguage = 'en', $use_downgrade_fallbacks = true, $replace_linebreaks = true) {
+		
+		$this->langPackDir = $langPackDir;
+		$this->fallbackLanguage = $fallbackLanguage;
+		$this->use_downgrade_fallbacks = $use_downgrade_fallbacks;
+		$this->replace_linebreaks = $replace_linebreaks;
 
 		$this->scan();
     }
 	
 	function scan() {
-		$langPackageScan = scandir(langPackDir) or die('ERROR: Could not find language Packages in folder '.langPackDir);
+		$langPackageScan = scandir($this->langPackDir) or die('ERROR: Could not find language Packages in folder '.$this->langPackDir);
 		foreach($langPackageScan AS $result) {
 			if ($result === '.' or $result === '..') continue;
-
-			if (is_dir(langPackDir . '/' . $result)) {
+			if($result == 'languagePackages.conf') {
+				// Found the configuration file
+				$this->readConfig($this->langPackDir.'/languagePackages.conf');
+			}
+			if (is_dir($this->langPackDir . '/' . $result)) {
 				// Found package
 				$this->langPackages[] = $result;
 			}
 		}
 	}
 	
+	function readConfig($path) {
+		// Read in the file
+		$file = file_get_contents($path);
+		$conf = explode(';', $file);
+		foreach($conf AS $preference) {
+			$data = explode('=', trim($preference));
+			$property = $data[0];
+			$this->$property = $data[1];
+		}
+	}
+	
+	function getLinebreakReplace() {
+		return $this->replace_linebreaks;
+	}
 	
 	function getFallbackPackage() {
-		return new languagePackage(langPackDir.'/'.fallbackLanguage, $this);
+		return new languagePackage($this->langPackDir.'/'.$this->fallbackLanguage, $this);
 	}
 	
 	function getDowngradeLanguageName($lang) {
@@ -38,15 +61,15 @@ class languageReader {
 	}
 	
 	function getDowngradeLanguagePackage($lang) {
-		return new languagePackage(langPackDir.'/'.$this->getDowngradeLanguageName($lang), $this);
+		return new languagePackage($this->langPackDir.'/'.$this->getDowngradeLanguageName($lang), $this);
 	}
 	
 	function getLanguagePackage($lang, $use_fallback = true) {
 		if(in_array($lang, $this->langPackages)) {
 			// Perfect. This package exists
-			return new languagePackage(langPackDir.'/'.$lang, $this);
+			return new languagePackage($this->langPackDir.'/'.$lang, $this);
 		}
-		else if(use_downgrade_fallbacks AND $this->is_complex($lang)) {
+		else if($this->use_downgrade_fallbacks AND $this->is_complex($lang)) {
 			// This package doesn't exist so check if downgrade is available
 			return $this->getDowngradeLanguagePackage($lang);
 		}
@@ -81,7 +104,7 @@ class languageReader {
 	}
 	
 	function getIntranslatablePackage() {
-		return new languagePackage(langPackDir.'/intranslatable', $this);
+		return new languagePackage($this->langPackDir.'/intranslatable', $this);
 	}
 	
 	function getPackageList() {
@@ -91,7 +114,7 @@ class languageReader {
 	function getPackages() {
 		$packages = array();
 		foreach($this->langPackages AS $package) {
-			$packages[] = new languagePackage(langPackDir.'/'.$package, $this);
+			$packages[] = new languagePackage($this->langPackDir.'/'.$package, $this);
 		}
 		return $packages;
 	}
