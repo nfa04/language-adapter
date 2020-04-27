@@ -10,6 +10,7 @@ require 'path/to/language-adapter/languagePackage.class.php';
 require 'path/to/language-adapter/languageReader.class.php';
 ```
 ### Packages
+#### Creating packages
 Before you use languageAdapter you need to define your language packages which languageAdapter will read. Follow these steps to create a directory from which languageAdapter will read its packages:
 1. Create a directory, name it as you want to but keep in mind you will need the path later in your code while initializing languageAdapter
 2. Create a directory inside the first one for each package you want to provide to languageAdapter and name it by there package name. You can use classic names like this: "en", or you can use complex package names like: "en-US" if you want to provide more details in your packages based on their region. Please Note: This is not a safe method, languageAdapter will work with the information the user's browser provides, these may not equal the actual the real geographic location of the user in some cases.
@@ -26,6 +27,17 @@ Please note their required values:
 - replace_linebreaks: needs to be a boolean like 0 or 1
 
 Please note: If you don't want to overwrite their standard values just remove the property from your configuration file. languageAdapter will use their standard value instead.
+
+#### Linking strings inside a string
+languageAdapter supports linking a string in another string, it will replace your link with the string value found in the resource you linked. You can do linking like this:
+```
+String before your link @link:packageName/stringId string after your link
+```
+
+If you want to link a string included in the same package you can use the keyword "this" instead of a package name. This action will be faster and more efficient than linking the package name because the package doesn't need to load again. Here is a quick example:
+```
+String before your link @link:this/stringId string after your link
+```
 
 ## Usage
 ### Initializing
