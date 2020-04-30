@@ -81,10 +81,20 @@ class languagePackage {
 					$data = explode('/', $command[1]);
 					// $data[0] contains the package
 					// $data[1] contains the stringId
-					if($data[0] == 'this') {
-						$words[$i] = $this->getString($data[1]);
+					
+					// Get , or . at the end of the string and remove all of them from stringId
+					$ending = substr($data[1], -1, 1);
+					$add = '';
+					if($ending == ',' OR $ending == '.') {
+						$add = $ending;
 					}
-					else $words[$i] = $this->reader->getLanguagePackage($data[0])->getString($data[1]);
+					$data[1] = str_replace(',', '', $data[1]);
+					$data[1] = str_replace('.', '', $data[1]);
+					
+					if($data[0] == 'this') {
+						$words[$i] = $this->getString($data[1]).$add;
+					}
+					else $words[$i] = $this->reader->getLanguagePackage($data[0])->getString($data[1]).$add;
 				}
 			} else continue;
 		}
