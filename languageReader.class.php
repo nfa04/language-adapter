@@ -14,6 +14,8 @@ class languageReader {
 	
 	function __construct($langPackDir, $fallbackLanguage = 'en', $use_downgrade_fallbacks = true, $replace_linebreaks = true) {
 		
+		@session_start();
+		
 		$this->langPackDir = $langPackDir;
 		$this->fallbackLanguage = $fallbackLanguage;
 		$this->use_downgrade_fallbacks = $use_downgrade_fallbacks;
@@ -81,6 +83,22 @@ class languageReader {
 	}
 	
 	function getAutodetectedLanguagePackage() {
+		if(isset($_SESSION['la-selected-lang']) AND !isset($_GET[$this->get_param])) return $this->getLanguagePackage($_SESSION['la-selected-lang']);
+		if(($this->listen_on_get AND isset($_GET[$this->get_param]))) {
+			// Chosen language detected in get params
+			$lp = $this->getLanguagePackage($_GET[$this->get_param]);
+			if($lp !== false) {
+				$_SESSION['la-selected-lang'] = $lp->getPackageName();
+				return $lp;
+			}
+			else {
+				$dlp = $this->getDowngradeLanguagePackage($_GET[$this->get_param]);
+				if($dlp !== false) {
+					$_SESSION['la-selected-lang'] = $dlp->getPackageName();
+					return $this->getDowngradeLanguagePackage($_GET[$this->get_param]);
+				}
+			}
+		}
 		$accepted = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
 		$weights = array();
 		foreach($accepted AS $lang) {

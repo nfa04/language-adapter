@@ -5,13 +5,17 @@ class languagePackage {
 	private $packageDir;
 	private $idList;
 	private $reader;
-	public $packageName;
+	private $packageName;
 	
 	function __construct($dir, $reader) {
 		$this->packageDir = $dir;
 		$this->reader = $reader;
 		$this->packageName = basename($this->packageDir);
 		$this->read();
+	}
+	
+	function getPackageName() {
+		return $this->packageName;
 	}
 	
 	function read() {

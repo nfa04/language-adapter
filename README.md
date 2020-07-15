@@ -20,11 +20,22 @@ Before you use languageAdapter you need to define your language packages which l
 fallbackLanguage=en;
 use_downgrade_fallbacks=1;
 replace_linebreaks=1;
+listen_on_get=1;
+get_param=lang;
 ```
 Please note their required values:
 - fallbackLanguage: needs to be an existing package name
 - use_downgrade_fallbacks: needs to be a boolean like 0 or 1
 - replace_linebreaks: needs to be a boolean like 0 or 1
+- listen_on_get: needs to be a boolean like 0 or 1
+- get_param: needs to be a string
+
+As well as their purpose:
+- fallbackLanguage: is the language you want to fall back to if there is no other language available
+- use_downgrade_fallbacks: is whether you want to downgrade complex package names to simple ones. If you choose "false", languageAdapter will use the package defined in "fallbackPackage" instead
+- replace_linebreaks: is whether you want languageAdapter to replace linebreaks in strings with html "br" tags
+- listen_on_get: is whether you want languageAdapter to listen on get parameters when choosing the language package
+- get_param: the get parameter you want languageAdapter to listen on
 
 Please note: If you don't want to overwrite their standard values just remove the property from your configuration file. languageAdapter will use their standard value instead.
 
@@ -91,12 +102,12 @@ $languagePackage = $languageReader->getDowngradeLanguagePackage('complexLanguage
 ```
 
 ### Get package based on browser language
-languageAdapter provides an easy method to get the best package available for your user based on the "HTTP_ACCEPT_LANGUAGE" header of the user's browser. languageAdapter will automatically find the package which fits the users needs most. You can load this package by doing this:
+languageAdapter provides an easy method to get the best package available for your user based on the "HTTP_ACCEPT_LANGUAGE" header of the user's browser, or (if not disabled in your configuration) using a defined languagePackage from a specified get parameter (standard is "lang"). languageAdapter will automatically find the package which fits the users needs most. You can load this package by doing this:
 ```php
 $languagePackage = $languageReader->getAutodetectedLanguagePackage();
 ```
 
-Please Note: If there is no package available listed in the user's "HTTP_ACCEPT_LANGUAGE" header this method will return the fallback package
+Please Note: If there is no package available listed in the user's "HTTP_ACCEPT_LANGUAGE" header and no package in your user's get parameters this method will return the fallback package
 
 ### Get an array of all package names found
 If you'd like to know which packages languageAdapter has detected use this method:
@@ -132,4 +143,10 @@ $languagePackage->setString('stringId', 'stringValue');
 If you don't want to overwrite any value if this string exists, set the third argument to be false:
 ```php
 $languagePackage->setString('stringId', 'stringValue', false);
+```
+
+### Get the name of a languagePackage
+If you'd like to get the name of a languagePackage you can get it by:
+```php
+$languagePackage->getPackageName();
 ```
