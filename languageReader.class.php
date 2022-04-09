@@ -6,20 +6,24 @@ class languageReader {
 	private $fallbackLanguage;
 	private $use_downgrade_fallbacks;
 	private $replace_linebreaks;
+	private $listen_on_get;
+	
 	
 	private function is_complex($lang) {
 		if(strpos($lang, '-') === false) return false;
 		else return true;
 	}
 	
-	function __construct($langPackDir, $fallbackLanguage = 'en', $use_downgrade_fallbacks = true, $replace_linebreaks = true) {
-		
+	
+	function __construct($langPackDir, $fallbackLanguage = 'en', $use_downgrade_fallbacks = true, $replace_linebreaks = true, $l_o_g = false) {
+
 		@session_start();
 		
-		$this->langPackDir = $langPackDir;
+		$this->langPackDir = __DIR__.DIRECTORY_SEPARATOR.$langPackDir;
 		$this->fallbackLanguage = $fallbackLanguage;
 		$this->use_downgrade_fallbacks = $use_downgrade_fallbacks;
 		$this->replace_linebreaks = $replace_linebreaks;
+		$this->listen_on_get = $l_o_g;
 
 		$this->scan();
     }
@@ -136,4 +140,5 @@ class languageReader {
 		}
 		return $packages;
 	}
+	
 }

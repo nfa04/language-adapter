@@ -58,16 +58,25 @@ Before you use language-adapter you need to initialize it by creating a new read
 $languageReader = new languageReader('path/to/languagePackages');
 ```
 
+Please note: You must specify the path from the perspective of languageAdapter, not from the script in which you include languageAdapter.
+
+Example:
+Directory 1 contains these folders:
+languageAdapter and lang
+
+In languageAdapter is the languageAdater library, while in lang are the packages. Then you have to specify the path "../lang", because from the point of view of languageAdapter the packages are located one folder above and in its subfolder lang.
+
 Optionally if you want to change some settings at this point you can do it by this:
 
 ```php
-$languageReader = new languageReader('path/to/languagePackages', $fallbackLanguage, $use_downgrade_fallbacks, $replace_linebreaks);
+$languageReader = new languageReader('path/to/languagePackages', $fallbackLanguage, $use_downgrade_fallbacks, $replace_linebreaks, $listen_on_get);
 ```
 
 Note the types of these vars:
 - $fallbackLanguage is a string. Its standard value is 'en' for English
 - $use_downgrade_fallbacks is a boolean. Its standard value is true
 - $replace_linebreaks is a boolean. Its standard value is true
+- $listen_on_get is a boolean. Its standard value is true.
 
 ### Reading a specified package
 If you know the name of the package you would like to load do this:
