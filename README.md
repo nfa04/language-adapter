@@ -1,5 +1,5 @@
 # language-adapter
-Language Adapter allows you to load strings in multiple languages based on packages you create, so your webpage is available in the languages you want with the phrases and words you chose.
+Language Adapter allows you to load strings in multiple languages based on packages you create, so your webpage is available in the languages you want with the phrases and words you chose. It is inspired by the principle of translating apps for Android and implements the principle very similarly in PHP. Among other things, LanguageAdapter supports automatic language detection (based on the Accept-Language HTTP header), country-specific language versions (e.g. en-US, which would be downgraded to en if en-US is not available) and a fallback language.
 
 ## Installation
 ### In your code
